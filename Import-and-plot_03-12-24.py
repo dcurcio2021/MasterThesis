@@ -498,7 +498,8 @@ def plotaxb(var,bdef,sim, legend, title):
                         elif bdef==1:
                             b=var[j][3]
                             plotnx1(s,v,b,axs,j,var,labels[e])
-                            title=b
+                            b1='Middle Bearing'
+                            title=b1
                         elif bdef==3:
                             if len(var[j])>4:
                                 for k in range(2):
@@ -546,13 +547,13 @@ def plotaxb(var,bdef,sim, legend, title):
                 axs[0].legend(loc='upper center', bbox_to_anchor=(1,1.2), ncol=round(np.sqrt(len(sim))))
     return fig
 #%%Define everything
-title='Loadcurve:2|Contour:0|Clearance:1.5\u2030|Eccentricity:1|'
-simdef=[75,70]  #define which folder (which simulation job which number after 'job')
+title='Parameter Combination Experiment'
+simdef=[53,54]  #define which folder (which simulation job which number after 'job')
 #(shortest running job always first, exept if everything=1, then longest running first)
 #simdef=findjobs(DOE,alljobs,'Loadcurve',2) #find all jobs from DOE table with same entry in column ''
 #simdef=findjobs(DOE,findjobs(DOE,alljobs,'Loadcurve',0),'Eccentricity',1) #nested listmaking
 #legend=['Zug ', 'Druck ','A','M']
-legend=[ 'Tension ', 'Compression ']
+legend=[ 'Cylindrical ', 'Contour ', '1.5 - ', '$e=0$ ','LC3','LC4','LC5' ]
 #'\u2030' promille 
 #'\u00B1' plus minus symbol
 
@@ -562,7 +563,7 @@ bdef=3 #definition of bearing surface(s) to be plotted (columns)
 #1 = variable with according bearings but only inner bearing
 #2 = variable with according bearings but only outer bearing
 #3 = variable with according bearings outer and inner on top of each other
-vdef=[0,4] #definition of rows
+vdef=[0,1,6] #definition of rows
 #Variables              conversion      unit
 var=[['hmin'            ,1e-6   ,'\u03BC'+'m', comp_names[0],comp_names[1]],  #0  #comp_names[0]=LagerMitte, [1]=LagerAussen 
      ['pmax'            ,1e5           ,'bar', comp_names[0],comp_names[1]],  #1
@@ -598,7 +599,7 @@ fig=plotaxb(vart,bdef,simt,legend,title)
 
 #%%exporting plots as svg to folder ...\plot_svg
 os.chdir(directory+'\\plot_svg')
-pltname='pltLC2_h_tensionvscompression.svg'
+pltname='pltfinal_h.svg'
 fig.savefig(pltname, format="svg")
 #%% Plot3d
 sim=findjobs(DOE,findjobs(DOE,alljobs,'Contour',0),'Loadcurve',2) #Loadcurve 2 sims w/o contour
@@ -645,4 +646,38 @@ for i in range(len(Bearings[0][0]['alpha'])):
 
 plt.plot(x[-180:],y2[-180:])
 
+#%%load curve comparisons
+x=Bearings['job70']['LagerAussen']['alpha'][-180:]-1080
+fig, ax1 = plt.subplots() 
+ax1.plot(x, -Bearings['job70']['LagerAussen']['for1-total'][-180:]/1000, label='LC2') #for relative sliding velocity
+#ax1.plot(x, -Bearings['job45']['LagerAussen']['for1-total'][-180:], label='LC3') #for relative sliding velocity
+ax1.plot(x, -Bearings['job65']['LagerAussen']['for1-total'][-180:]/1000, label='LC4')
+#ax1.plot(x, -Bearings['job67']['LagerAussen']['for1-total'][-180:], label='LC5')
+#ax1.plot(x, Bearings['job85']['LagerAussen']['for1-total'][-180:], label='LC2.1')
+#ax1.plot(x, Bearings['job88']['LagerAussen']['for1-total'][-180:], label='LC2.2')
+ax1.plot(x, Bearings['job83']['LagerAussen']['for1-total'][-180:]/1000, label='LC2.3')
+ax1.set_xlabel('Crank Angle [°]')
+ax1.set_ylabel('Load [kN]')
+ax1.legend(loc='lower right')
+ax1.grid(1)
+plt.xlim(0,360)
+plt.xticks([0,90,180,270,360])
+plt.title('Different Load Curves')
+plt.axhline(y=0, linestyle='dashed', color='black')
 
+#%% phase shifting manipulations
+#for const load vs load curve
+Bearings['job40']['LagerMitte']['hmin']=Bearings['job40']['LagerMitte']['hmin'][:-90]
+Bearings['job40']['LagerAussen']['hmin']=Bearings['job40']['LagerAussen']['hmin'][:-90]
+Bearings['job40']['LagerMitte']['pmax']=Bearings['job40']['LagerMitte']['pmax'][:-90]
+Bearings['job40']['LagerAussen']['pmax']=Bearings['job40']['LagerAussen']['pmax'][:-90]
+Bearings['job40']['LagerMitte']['alpha']=Bearings['job40']['LagerMitte']['alpha'][90:]
+Bearings['job40']['LagerAussen']['alpha']=Bearings['job40']['LagerAussen']['alpha'][90:]
+Bearings['job58']['LagerMitte']['hmin']=Bearings['job58']['LagerMitte']['hmin'][90:]
+Bearings['job58']['LagerAussen']['hmin']=Bearings['job58']['LagerAussen']['hmin'][90:]
+Bearings['job58']['LagerMitte']['pmax']=Bearings['job58']['LagerMitte']['pmax'][90:]
+Bearings['job58']['LagerAussen']['pmax']=Bearings['job58']['LagerAussen']['pmax'][90:]
+Bearings['job58']['LagerMitte']['alpha']=Bearings['job58']['LagerMitte']['alpha'][:-90]
+Bearings['job58']['LagerAussen']['alpha']=Bearings['job58']['LagerAussen']['alpha'][:-90]
+Bearings['job58']['LagerMitte']['for1-total']=Bearings['job58']['LagerMitte']['for1-total'][90:]
+Bearings['job58']['LagerAussen']['for1-total']=Bearings['job58']['LagerAussen']['for1-total'][90:]

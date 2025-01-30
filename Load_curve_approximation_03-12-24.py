@@ -6,8 +6,19 @@ import pandas as pd
 from scipy.optimize import curve_fit
 from scipy.optimize import fsolve
 from matplotlib import rcParams
-from scipy.optimize import root_scalar
+#from scipy.optimize import root_scalar
 from scipy.optimize import minimize_scalar
+
+rcParams['axes.labelsize'] = 35
+rcParams['axes.titlesize'] = 35
+rcParams['xtick.labelsize'] = 24
+rcParams['ytick.labelsize'] = 24
+rcParams['legend.fontsize'] = 24
+rcParams['font.family'] = 'sans serif'
+rcParams['font.serif'] = ['Helvetica']
+rcParams['figure.titlesize'] = 35
+rcParams['figure.figsize'] = 15, 10
+#rcParams['axes.prop_cycle']=cycler(color='bkycrmg')
 
 rcParams['font.family'] = 'sans serif'
 rcParams['font.serif'] = ['Helvetica']
@@ -128,22 +139,22 @@ y_norm2=np.append(y_normalized,y_normalized)
 y_reconstructed2=np.append(y_reconstructed,y_reconstructed)
 y_reconstructed4=np.append(y_reconstructed2,y_reconstructed2)
 #%% Plotten der Original- und rekonstruierten Daten
-plt.plot(x_deg, y, label='Original')
-#plt.plot(x_deg, y_gas, label='Gas Force')
-#plt.plot(x_deg, y_inertia, label='Mass Force')
+# plt.plot(x_deg, -y, label='Net Force')
+# plt.plot(x_deg, -y_gas, label='Gas Force')
+# plt.plot(x_deg, -y_inertia, label='Mass Force')
 
 #plt.plot(x_deg, y, label='Ventilabhebung')
-#plt.plot(x_deg, y_uniform, label='Normal Operation', color='r')
-#plt.plot(x_deg, y_valve_unloading, label='50% Valve Unloading')
-#plt.plot(x_deg, y_steppiston, label='Step-Piston')
+# plt.plot(x_deg, -y_uniform, label='Normal Operation')
+# plt.plot(x_deg, -y_valve_unloading, label='50% Valve Unloading')
+# plt.plot(x_deg, -y_steppiston, label='Step-Piston')
 #plt.plot(x_deg, y_new, label='New (offset:'+str(offset)+'|scale:'+str(scale)+')', linestyle='--',color='k')
-plt.plot(x_deg, y_reconstructed, label='Reconstructed', linestyle='-.')
+#plt.plot(x_deg, -y_reconstructed, label='Reconstructed', linestyle='-.')
 #plt.plot(x_deg, y_reconstructed_normalized, label='Reconstructed', linestyle='-.')
 
 #Lastkurven fuer Experimente #2 (Exzenterbuchse)
-plt.plot(x_deg, y_new_off62_s0_25, label='LC #2.1')
-plt.plot(x_deg, y_new_off15_s0_5, label='LC #2.2')
-plt.plot(x_deg, y_new_off_neg35_s0_75, label='LC #2.3')
+# plt.plot(x_deg, -y_new_off62_s0_25, label='LC #2.1')
+# plt.plot(x_deg, -y_new_off15_s0_5, label='LC #2.2')
+#plt.plot(x_deg,- y_new_off_neg35_s0_75, label='LC #2.3')
 
 #plt.plot(x_deg, y_recon_noshift,label='no phase shift')
 
@@ -170,11 +181,16 @@ plt.ylabel('Load on Connecting Rod [kN]')
 #plt.ylabel('Relative Sliding Velocity [m/s]')
 
 plt.grid(1)
-plt.title('Eccentric Displacement vs °CA')
-plt.title('Relative Sliding Velocity & Eccentric Displacement vs °CA')
+plt.title('Load Breakdown')
+#plt.title('Load Curves LP250V')
+#plt.title('Derivation of Loadcurves 2.1, 2.2 and 2.3')
+#plt.title('Relative Sliding Velocity & Eccentric Displacement vs °CA')
 plt.axhline(y=0, linestyle='dashed', color='black')
 
-plt.legend()
+# plt.legend()
+# os.chdir(directory+'\\plot_svg')
+# pltname='load_breakdown.svg'
+# plt.savefig(pltname, format="svg")
 
 #plt.show()
 #%% reversal calculation (all from "wrapped_sinus_function")
@@ -232,7 +248,7 @@ else:
     print("Root finding failed.")
 #%% for exporting plots as svg to folder ...\plot_svg, has to be inserted before plt.show
 os.chdir(directory+'\\plot_svg')
-pltname='sliding_velocity_vs_xdisp.svg'
+pltname='loadcurve_comparison.svg'
 plt.savefig(pltname, format="svg")
-#fig.savefig(pltname, format="svg") for subplots
+#fig.savefig(pltname, format="svg") # for subplots
 
