@@ -188,6 +188,7 @@ def all(ax,sim,var,everything):
     global xstart
     global xend
     global endx
+    startx=0
     if everything==0:
         startx=-180
         xend=Bearings[sim[0]][var[0][3]]['alpha'][-1]
@@ -548,9 +549,9 @@ def plotaxb(var,bdef,sim, legend, title):
     return fig
 #%%Define everything
 title='Parameter Combination Experiment'
-simdef=[53,54]  #define which folder (which simulation job which number after 'job')
+simdef=[82,84]  #define which folder (which simulation job which number after 'job')
 #(shortest running job always first, exept if everything=1, then longest running first)
-#simdef=findjobs(DOE,alljobs,'Loadcurve',2) #find all jobs from DOE table with same entry in column ''
+#simdef=findjobs(DOE,alljobs,'Loadcurve',2.3) #find all jobs from DOE table with same entry in column ''
 #simdef=findjobs(DOE,findjobs(DOE,alljobs,'Loadcurve',0),'Eccentricity',1) #nested listmaking
 #legend=['Zug ', 'Druck ','A','M']
 legend=[ 'Cylindrical ', 'Contour ', '1.5 - ', '$e=0$ ','LC3','LC4','LC5' ]
@@ -558,12 +559,12 @@ legend=[ 'Cylindrical ', 'Contour ', '1.5 - ', '$e=0$ ','LC3','LC4','LC5' ]
 #'\u00B1' plus minus symbol
 
 #"bearing"/Which part of the model to analyse
-bdef=3 #definition of bearing surface(s) to be plotted (columns)
+bdef=0 #definition of bearing surface(s) to be plotted (columns)
 #0 = variable with according bearings outer and inner next to each other
 #1 = variable with according bearings but only inner bearing
 #2 = variable with according bearings but only outer bearing
 #3 = variable with according bearings outer and inner on top of each other
-vdef=[0,1,6] #definition of rows
+vdef=[4] #definition of rows
 #Variables              conversion      unit
 var=[['hmin'            ,1e-6   ,'\u03BC'+'m', comp_names[0],comp_names[1]],  #0  #comp_names[0]=LagerMitte, [1]=LagerAussen 
      ['pmax'            ,1e5           ,'bar', comp_names[0],comp_names[1]],  #1
