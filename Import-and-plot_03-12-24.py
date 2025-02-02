@@ -222,6 +222,8 @@ def plotnx1(s,v,b,axs,j,var,label):
         label=label+' mean:'+str(Bearings[s][b]['mean_flw'])+'l/min'
     elif maxmin==1 and v=='flw-net':
         label=label+' mean:'+str(Bearings[s][b]['mean_flw_net'])+'l/min'
+    elif maxmin==1 and v=='prei':
+        label=label+' mean:'+str(Bearings[s][b]['mean_prei'])+'kW'
     axs[j].plot(x, y, label=label)
     axs[j].grid(True)
     
@@ -239,6 +241,8 @@ def plotnx2(s,v,b,axs,j,i,var,label):
         label=label+' mean:'+str(Bearings[s][b]['mean_flw'])+'l/min'
     elif maxmin==1 and v=='flw-net':
         label=label+' mean:'+str(Bearings[s][b]['mean_flw_net'])+'l/min'
+    elif maxmin==1 and v=='prei':
+        label=label+' mean:'+str(Bearings[s][b]['mean_prei'])+'kW'
     axs[j,i].plot(x, y, label=label)
     axs[j,i].sharey(axs[j,i-1])
     axs[j,i].grid(True)
@@ -257,6 +261,8 @@ def plot1x1(s,v,b,axs,j,i,var,label):
         label=label+' mean:'+str(Bearings[s][b]['mean_flw'])+'l/min'
     elif maxmin==1 and v=='flw-net':
         label=label+' mean:'+str(Bearings[s][b]['mean_flw_net'])+'l/min'
+    elif maxmin==1 and v=='prei':
+        label=label+' mean:'+str(Bearings[s][b]['mean_prei'])+'kW'
     axs.plot(x, y, label=label)
     #axs.set_title(b)
     axs.grid(True)
@@ -276,6 +282,8 @@ def plot1xn(s,v,b,axs,j,i,var,label):
         label=label+' mean:'+str(Bearings[s][b]['mean_flw'])+'l/min'
     elif maxmin==1 and v=='flw-net':
         label=label+' mean:'+str(Bearings[s][b]['mean_flw_net'])+'l/min'
+    elif maxmin==1 and v=='prei':
+        label=label+' mean:'+str(Bearings[s][b]['mean_prei'])+'kW'
     axs[i].plot(x, y, label=label)
     axs[i].sharey(axs[i-1])
     axs[i].set_title(b)
@@ -300,8 +308,8 @@ for i in range(len(Bearings)):
     Bearings[s][comp_names[1]]['maxpmax']=round(np.max(Bearings[s][comp_names[1]]['pmax'][-180:]*1e-5),0)
     #mean oil flow over 'rand' in l/min and mean net flow (should be ~0)
     if 'flw-sum-rand' in Bearings[s][comp_names[1]]:
-        Bearings[s][comp_names[0]]['mean_flw']=round(np.mean(Bearings[s][comp_names[0]]['flw-sum-rand'][-180:]*60*1e3),1)
-        Bearings[s][comp_names[1]]['mean_flw']=round(np.mean(Bearings[s][comp_names[1]]['flw-sum-rand'][-180:]*60*1e3),1)
+        Bearings[s][comp_names[0]]['mean_flw']=round(np.mean(Bearings[s][comp_names[0]]['flw-sum-rand'][-180:]*60*1e3),2)
+        Bearings[s][comp_names[1]]['mean_flw']=round(np.mean(Bearings[s][comp_names[1]]['flw-sum-rand'][-180:]*60*1e3),2)
         Bearings[s][comp_names[1]]['mean_flw_net']=round(np.mean(Bearings[s][comp_names[1]]['flw-net'][-180:]*60*1e3),2)
         Bearings[s][comp_names[0]]['mean_flw_net']=round(np.mean(Bearings[s][comp_names[0]]['flw-net'][-180:]*60*1e3),2)
     #Moment around z-axis from hydrodynamic forces -->check if same as buchse_stange mom3
@@ -310,6 +318,10 @@ for i in range(len(Bearings)):
     #Bearings[s][comp_names[2]]['mom_res']=Bearings[s][comp_names[0]]['hy_mom']#+Bearings[s][comp_names[1]]['hy_mom']
     #alpha max (°CA max)
     Bearings[s][comp_names[0]]['alphamax']=Bearings[s][comp_names[0]]['alpha'][-1]
+    if 'prei' in Bearings[s][comp_names[1]]:
+        Bearings[s][comp_names[0]]['mean_prei']=round(np.mean(Bearings[s][comp_names[0]]['prei'][-180:]/1e3),2)
+        Bearings[s][comp_names[1]]['mean_prei']=round(np.mean(Bearings[s][comp_names[1]]['prei'][-180:]/1e3),2)
+
 
 
 #%% induced forces
@@ -548,13 +560,13 @@ def plotaxb(var,bdef,sim, legend, title):
                 axs[0].legend(loc='upper center', bbox_to_anchor=(1,1.2), ncol=round(np.sqrt(len(sim))))
     return fig
 #%%Define everything
-title='Parameter Combination Experiment'
-simdef=[82,84]  #define which folder (which simulation job which number after 'job')
+title='Eccentricity Variation: 0.5mm vs 1mm'
+simdef=[36,37]  #define which folder (which simulation job which number after 'job')
 #(shortest running job always first, exept if everything=1, then longest running first)
 #simdef=findjobs(DOE,alljobs,'Loadcurve',2.3) #find all jobs from DOE table with same entry in column ''
 #simdef=findjobs(DOE,findjobs(DOE,alljobs,'Loadcurve',0),'Eccentricity',1) #nested listmaking
 #legend=['Zug ', 'Druck ','A','M']
-legend=[ 'Cylindrical ', 'Contour ', '1.5 - ', '$e=0$ ','LC3','LC4','LC5' ]
+legend=[ 'Ecc: 1mm ', 'Ecc 0.5 ', '1.5 - ', '$e=0$ ','LC3','LC4','LC5' ]
 #'\u2030' promille 
 #'\u00B1' plus minus symbol
 
@@ -564,7 +576,7 @@ bdef=0 #definition of bearing surface(s) to be plotted (columns)
 #1 = variable with according bearings but only inner bearing
 #2 = variable with according bearings but only outer bearing
 #3 = variable with according bearings outer and inner on top of each other
-vdef=[4] #definition of rows
+vdef=[0,1] #definition of rows
 #Variables              conversion      unit
 var=[['hmin'            ,1e-6   ,'\u03BC'+'m', comp_names[0],comp_names[1]],  #0  #comp_names[0]=LagerMitte, [1]=LagerAussen 
      ['pmax'            ,1e5           ,'bar', comp_names[0],comp_names[1]],  #1
@@ -588,7 +600,6 @@ var=[['hmin'            ,1e-6   ,'\u03BC'+'m', comp_names[0],comp_names[1]],  #0
      ['mom3'            ,1              ,'Nm', comp_names[2]],                #19 #ONLY BuchseStange moment of bearing
      ['rot'            ,np.pi/180,'° Con-rod', comp_names[3]],                #20 #ONLY Zapfen
      ['d1-max-AUGE'     ,1e-6  ,'\u03BC'+'m?', comp_names[4]]]                #21 #max dislocation in x-direction (conrod direction) relative to position at time=0 (deformation+dislocation) (AUGE = name conrod small end model part)
-     
 everything=0 #plot everything on x-axis or only the last revolution (1/0)
 maxmin=1 #put max or min into legend (1/0)
 fsim(simdef)
@@ -600,7 +611,7 @@ fig=plotaxb(vart,bdef,simt,legend,title)
 
 #%%exporting plots as svg to folder ...\plot_svg
 os.chdir(directory+'\\plot_svg')
-pltname='pltfinal_h.svg'
+pltname='plt_eccvar.svg'
 fig.savefig(pltname, format="svg")
 #%% Plot3d
 sim=findjobs(DOE,findjobs(DOE,alljobs,'Contour',0),'Loadcurve',2) #Loadcurve 2 sims w/o contour

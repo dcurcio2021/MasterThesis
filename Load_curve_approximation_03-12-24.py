@@ -58,9 +58,9 @@ y_normalized = (y-y_min/2) / (y_max-y_min)
 y_factor_orig=y_max-y_min
 y_add_orig=y_min/2
 #%% change offset and scaling factor of fit curve
-offset=0
+offset=-35
 y_add=y_add_orig+offset #for a y-axis offset
-scale=1
+scale=0.75
 y_factor=y_factor_orig*scale
 #%% fitting sinsoidal curve (here up to 4th order)
 def sinus_function(x, a0, a1,c1, a2,c2, a3,c3, a4,c4):
@@ -147,13 +147,13 @@ y_reconstructed4=np.append(y_reconstructed2,y_reconstructed2)
 # plt.plot(x_deg, -y_uniform, label='Normal Operation')
 # plt.plot(x_deg, -y_valve_unloading, label='50% Valve Unloading')
 # plt.plot(x_deg, -y_steppiston, label='Step-Piston')
-#plt.plot(x_deg, y_new, label='New (offset:'+str(offset)+'|scale:'+str(scale)+')', linestyle='--',color='k')
+plt.plot(x_deg, y_new, label='New (offset:'+str(offset)+'|scale:'+str(scale)+')', linestyle='--',color='k')
 #plt.plot(x_deg, -y_reconstructed, label='Reconstructed', linestyle='-.')
 #plt.plot(x_deg, y_reconstructed_normalized, label='Reconstructed', linestyle='-.')
 
 #Lastkurven fuer Experimente #2 (Exzenterbuchse)
-# plt.plot(x_deg, -y_new_off62_s0_25, label='LC #2.1')
-# plt.plot(x_deg, -y_new_off15_s0_5, label='LC #2.2')
+#plt.plot(x_deg, -y_new_off62_s0_25, label='LC #2.1')
+#plt.plot(x_deg, -y_new_off15_s0_5, label='LC #2.2')
 #plt.plot(x_deg,- y_new_off_neg35_s0_75, label='LC #2.3')
 
 #plt.plot(x_deg, y_recon_noshift,label='no phase shift')
@@ -242,7 +242,7 @@ if root_result.success:
     print(f"x where second derivative is 0: {x_zero}")
 
     # Evaluate the first derivative at this x
-    max_rate_of_change = sinus_function_prime(x_zero, a1, c1, a2, c2, a3, c3, a4, c4)*y_factor_orig
+    max_rate_of_change = y_factor*sinus_function_prime(x_zero, a1, c1, a2, c2, a3, c3, a4, c4)
     print(f"Maximum rate of change: {max_rate_of_change}")
 else:
     print("Root finding failed.")
